@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/KevinRhode/GenREADME/issues"
   },
-  "homepage": "https://github.com/KevinRhode/GenREADME#readme"
+  "homepage": "https://github.com/KevinRhode/GenREADME#readme",
+  "dependencies": {
+    "inquirer": "^8.2.4"
+  }
 }
