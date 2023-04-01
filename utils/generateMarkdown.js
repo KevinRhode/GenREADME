@@ -26,7 +26,8 @@ function generateMarkdown(data) {
   return `# ${data.projectName}\n\n
   ## Description\n\n${data.description}\n\n
   ## Table of Contents\n\n${data.tableOfContents}\n\n
-  
+  ## User Story\n\n${data.userStory}\n\n
+  ## Acceptance Criteria\n\n${data.acceptanceCriteria}\n\n
   `;
 
 
