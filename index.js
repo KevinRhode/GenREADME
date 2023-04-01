@@ -2,7 +2,7 @@
 const inquirer = require('inquirer');
 const fs = require('fs');
 //require the util
-const util = require('./utils/generateMarkdown.js');
+const gMD = require('./utils/generateMarkdown.js');
 
 const filename = process.argv[1].substring(0,process.argv[1].lastIndexOf("\\") + 1) + 'README.md';
 
@@ -116,7 +116,7 @@ const acceptanceCriteria = [
     end:'  ',
   },
   {
-    type: 'input',
+    type: 'list',
     name: 'name',
     message: "Continue with another WHEN?",
     choices: ['Yes','No'],
@@ -171,7 +171,7 @@ const qArray = [questions,descriptionQuestions,userStory,acceptanceCriteria];
 const writeToFile = () => { 
 
   //make data pretty with makePretty - return string  
-
+  let testing = generateMarkdown(readMe);
   fs.writeFile(filename, util.generateMarkdown(readMe), (err) =>
     err ? console.log(err) : () => {
       console.log('Success!');      
@@ -213,13 +213,13 @@ const init = {
               readMe.projectName = data
               break;
             case 'continueWhen':
-              if (data === 'Yes') {
-                j-2;
+              if (data.name === 'Yes') {
+                j = j-3;
               }
               break;
             case 'continueGiven':
-              if (data === 'Yes') {
-                j-3;
+              if (data.name === 'Yes') {
+                j = j-5;
               }
               break;
             case '':

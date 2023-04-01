@@ -35,4 +35,6 @@ function generateMarkdown(data) {
 
 }
 
-module.exports = generateMarkdown;
+module.exports = {
+  generateMarkdown
+};
