@@ -118,14 +118,15 @@ const acceptanceCriteria = [
   {
     type: 'input',
     name: 'name',
-    message: " ",
+    message: "Continue with another WHEN?",
+    choices: ['Yes','No'],
     title: "continueWhen",
   },
   {
     type: 'list',
     name: 'name',
     message: "Continue with another GIVEN? ",
-    choices: [],
+    choices: ['Yes','No'],
     title: "continueGiven",
   },
 
@@ -209,10 +210,19 @@ const init = {
 
           switch (questions.title) {
             case 'projectName':
-              
+              readMe.projectName = data
+              break;
+            case 'continueWhen':
+              if (data === 'Yes') {
+                j-2;
+              }
+              break;
+            case 'continueGiven':
+              if (data === 'Yes') {
+                j-3;
+              }
               break;
             case '':
-              
               break;
           
             default:
