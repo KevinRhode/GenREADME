@@ -70,6 +70,7 @@ const userStory = [
     message: "As A ",
     title: "userStory",
     pre: "As A ",
+    end:'  ',
   },
   {
     type: 'input',
@@ -77,7 +78,7 @@ const userStory = [
     message: "I WANT ",
     title: "userStory",
     pre: "\nI WANT ",
-
+    end:'  ',
   },
   {
     type: 'input',
@@ -85,6 +86,7 @@ const userStory = [
     message: "SO THAT I ",
     title: "userStory" ,
     pre: "\nSO THAT I ",
+    end:'  ',
   },
 ];
 
@@ -95,6 +97,7 @@ const acceptanceCriteria = [
     message: "GIVEN ",
     title: "acceptanceCriteria",
     pre: "GIVEN ",
+    end:'  ',
   },
   {
     type: 'input',
@@ -102,6 +105,7 @@ const acceptanceCriteria = [
     message: "WHEN ",
     title: "acceptanceCriteria",
     pre: "\nWHEN ",
+    end:'  ',
   },
   {
     type: 'input',
@@ -109,8 +113,21 @@ const acceptanceCriteria = [
     message: "THEN ",
     title: "acceptanceCriteria",
     pre: "\nTHEN ",
+    end:'  ',
   },
 ];
+const installationInstructions = [
+  {
+    type: 'input',
+    name: 'name',
+    message: "What are the steps required to install your project? Provide a step-by-step description of how to get the development environment running.",
+    title: "installation",
+    pre: '',
+  },
+];
+const usageInformation = [];
+const contributionGuidelines = [];
+const testInstructions = [];
 
 const qArray = [questions,descriptionQuestions,userStory,acceptanceCriteria];
 
@@ -132,8 +149,14 @@ const makePretty = (data) =>{
 
   stringToReturn += `# ${data.projectName}\n\n`;
   stringToReturn += `## Description\n\n${data.description}\n\n`;
+  //table of contents
   stringToReturn += `## User Story\n\n${data.userStory}\n\n`;
   stringToReturn += `## Acceptance Criteria\n\n${data.acceptanceCriteria}\n\n`
+  //Installation
+  //Usage
+  //Contributing
+  //Tests
+
     
   return stringToReturn;
 }
@@ -148,7 +171,8 @@ const init = {
         const questions = element[j];
         await inquirer.prompt(questions).then((data)=>{
 
-          readMe[questions.title] += (questions.pre + data.name)  
+          questions.end == undefined ?  readMe[questions.title] += (questions.pre + data.name)  : readMe[questions.title] += (questions.pre + data.name + data.end);  
+          
         }); 
       }      
     }      
