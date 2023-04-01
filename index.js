@@ -3,6 +3,7 @@ const inquirer = require('inquirer');
 const fs = require('fs');
 //require the util
 const gMD = require('./utils/generateMarkdown.js');
+const { title } = require('process');
 
 const filename = process.argv[1].substring(0,process.argv[1].lastIndexOf("\\") + 1) + 'README.md';
 
@@ -149,30 +150,49 @@ const usageInformation = [
 ];
 const contributionGuidelines = [
   {
-    type:'',
-    message:'',
-    name: 'name'
+    type:'input',
+    message:'Enter descrtion',
+    name: 'name',
+    title:'contributingDesc'
+  },
+  {
+    type:'input',
+    message:'Enter Link',
+    name: 'name',
+    title:'contributingSrc'
+  },
+  {
+    type: 'list',
+    name: 'name',
+    message: "Continue with another Contributer?",
+    choices: ['Yes','No'],
+    title: "continueContr",
   },
 ];
 const testInstructions = [
-
+  {
+    type:'input',
+    message:'Enter Guidelines for testing',
+    name: 'name',
+    title:'tests'
+  },
 ];
 const license = [
   {
     type: 'list',
     message: 'What license will this project be covered by?',
     name: 'license',
-    choices: ['email', 'phone', 'telekinesis'],
+    choices: ['GNU GPLv3', 'Apache License 2.0', 'MIT License'],
   },
 ];
 
-const qArray = [questions,descriptionQuestions,userStory,acceptanceCriteria];
+const qArray = [questions,descriptionQuestions,userStory,acceptanceCriteria,installationInstructions,usageInformation,contributionGuidelines,testInstructions];
 
 const writeToFile = () => { 
 
   //make data pretty with makePretty - return string  
-  let testing = generateMarkdown(readMe);
-  fs.writeFile(filename, util.generateMarkdown(readMe), (err) =>
+  let testing = gMD.generateMarkdown(readMe);
+  fs.writeFile(filename, gMD.generateMarkdown(readMe),null, (err) =>
     err ? console.log(err) : () => {
       console.log('Success!');      
     }
@@ -180,23 +200,23 @@ const writeToFile = () => {
 
 }   
 //makePretty moving to generateMarkdown.js
-const makePretty = (data) =>{
+// const makePretty = (data) =>{
 
-  let stringToReturn = '';
+//   let stringToReturn = '';
 
-  stringToReturn += `# ${data.projectName}\n\n`;
-  stringToReturn += `## Description\n\n${data.description}\n\n`;
-  //table of contents
-  stringToReturn += `## User Story\n\n${data.userStory}\n\n`;
-  stringToReturn += `## Acceptance Criteria\n\n${data.acceptanceCriteria}\n\n`
-  //Installation
-  //Usage
-  //Contributing
-  //Tests
+//   stringToReturn += `# ${data.projectName}\n\n`;
+//   stringToReturn += `## Description\n\n${data.description}\n\n`;
+//   //table of contents
+//   stringToReturn += `## User Story\n\n${data.userStory}\n\n`;
+//   stringToReturn += `## Acceptance Criteria\n\n${data.acceptanceCriteria}\n\n`
+//   //Installation
+//   //Usage
+//   //Contributing
+//   //Tests
 
     
-  return stringToReturn;
-}
+//   return stringToReturn;
+// }
 
 // TODO: Create a function to initialize app
 const init = {
@@ -210,7 +230,7 @@ const init = {
 
           switch (questions.title) {
             case 'projectName':
-              readMe.projectName = data
+              readMe.projectName = data.name;
               break;
             case 'continueWhen':
               if (data.name === 'Yes') {
@@ -222,9 +242,28 @@ const init = {
                 j = j-5;
               }
               break;
-            case '':
+            case 'description':
+              readMe.description += `${data.name}` ;
               break;
-          
+            case 'userStory':
+              readMe.userStory += `${data.name}  `;
+              break;
+            case 'acceptanceCriteria':
+              readMe.acceptanceCriteria += `${data.name}  `;
+              break;
+            case 'continueContr':
+              if (`${data.name}` === 'No') {                
+              } else{
+                j = j-3;
+              }
+              break;
+            case 'contributingDesc':
+              readMe.contributing += `${data.name},`
+              break;
+            case 'contributingSrc':
+              readMe.contributing += `${data.name};  \n`
+              break;
+              
             default:
 
               break;
@@ -243,3 +282,7 @@ const init = {
 // Function call to initialize app
 init.callQuestions().then(writeToFile);
 
+module.exports = {
+  license,
+  inquirer
+}
