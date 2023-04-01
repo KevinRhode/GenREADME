@@ -115,6 +115,20 @@ const acceptanceCriteria = [
     pre: "\nTHEN ",
     end:'  ',
   },
+  {
+    type: 'input',
+    name: 'name',
+    message: " ",
+    title: "continueWhen",
+  },
+  {
+    type: 'list',
+    name: 'name',
+    message: "Continue with another GIVEN? ",
+    choices: [],
+    title: "continueGiven",
+  },
+
 ];
 const installationInstructions = [
   {
@@ -125,9 +139,31 @@ const installationInstructions = [
     pre: '',
   },
 ];
-const usageInformation = [];
-const contributionGuidelines = [];
-const testInstructions = [];
+const usageInformation = [
+  {
+    type: 'input',
+    message: 'Provide instructions and examples for use. Include screenshots as needed.',
+    name: 'name',      
+  },
+];
+const contributionGuidelines = [
+  {
+    type:'',
+    message:'',
+    name: 'name'
+  },
+];
+const testInstructions = [
+
+];
+const license = [
+  {
+    type: 'list',
+    message: 'What license will this project be covered by?',
+    name: 'license',
+    choices: ['email', 'phone', 'telekinesis'],
+  },
+];
 
 const qArray = [questions,descriptionQuestions,userStory,acceptanceCriteria];
 
@@ -135,14 +171,14 @@ const writeToFile = () => {
 
   //make data pretty with makePretty - return string  
 
-  fs.writeFile(filename, makePretty(readMe), (err) =>
+  fs.writeFile(filename, util.generateMarkdown(readMe), (err) =>
     err ? console.log(err) : () => {
       console.log('Success!');      
     }
   );
 
 }   
-
+//makePretty moving to generateMarkdown.js
 const makePretty = (data) =>{
 
   let stringToReturn = '';
@@ -171,7 +207,20 @@ const init = {
         const questions = element[j];
         await inquirer.prompt(questions).then((data)=>{
 
-          questions.end == undefined ?  readMe[questions.title] += (questions.pre + data.name)  : readMe[questions.title] += (questions.pre + data.name + data.end);  
+          switch (questions.title) {
+            case 'projectName':
+              
+              break;
+            case '':
+              
+              break;
+          
+            default:
+
+              break;
+          }
+
+          // questions.end == undefined ?  readMe[questions.title] += (questions.pre + data.name)  : readMe[questions.title] += (questions.pre + data.name + data.end);  
           
         }); 
       }      
