@@ -1,5 +1,5 @@
 
-const indexMods = require('../index.js');
+// const indexMods = require('../index.js');
 
 // TODO: Create a function that returns a license badge based on which license is passed in
 // If there is no license, return an empty string
@@ -40,10 +40,14 @@ function renderLicenseLink(license) {
 // If there is no license, return an empty string
 function renderLicenseSection(license) {
 
-  indexMods.inquirer.prompt(indexMods.license).then((data)=>{
+  
+const badge= `## License\n\n[${renderLicenseBadge(license)}](${renderLicenseLink(license)})\n\n`;
+
+
+  // indexMods.inquirer.prompt(indexMods.license).then((data)=>{
     switch (license) {
       case 'GNU GPLv3':      
-        return `GNU GENERAL PUBLIC LICENSE
+        return `${badge}\nGNU GENERAL PUBLIC LICENSE
         Version 3, 29 June 2007
 
 Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
@@ -716,9 +720,9 @@ into proprietary programs.  If your program is a subroutine library, you
 may consider it more useful to permit linking proprietary applications with
 the library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.  But first, please read
-<https://www.gnu.org/licenses/why-not-lgpl.html>.';
+<https://www.gnu.org/licenses/why-not-lgpl.html>.';`
       case 'Apache License 2.0':      
-      return ' Apache License
+      return `${badge}\n Apache License
       Version 2.0, January 2004
    http://www.apache.org/licenses/
 
@@ -920,7 +924,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.`;
       case 'MIT License':      
-      return `MIT License
+      return `${badge}\nMIT License
 
       Copyright (c) [year] [fullname]
       
@@ -944,7 +948,9 @@ limitations under the License.`;
       default:
         return '';
     }
-  });
+  
+
+
 
 }
 //TODO: Create a functiuon that dymc generates table of contents for values that are not blank
@@ -952,35 +958,22 @@ function renderTableOfContents(data){
 
     let tOC = '';
     for (const property in data) {
-      // console.log(`${property}: ${data[property]}`);
-      //|| `${data[property]}` === 'projectName'
-      //let stringtotest = `${data[property]}`;
-
-      //let test = (`${data[property]}` === '' || `${property}` === 'projectName');
+           
       let tOCR = property;
-      // let indexes = [];
+      
       for (let i = 0; i < tOCR.length;) {
         const element = tOCR[i];
         
-        if (element.match(/[A-Z]/) != null) {
-          // indexes.push(i);
+        if (element.match(/[A-Z]/) != null) {          
           tOCR = `${tOCR.slice(0,i)} ${tOCR.slice(i,tOCR.length)}`;
           i++;
         }
         i++;
 
-      }
-      // if (indexes.length > 0) {
-      //   for (let i = 0; i < indexes.length; i++) {
-      //     //const element = indexes[i];
-      //     //tOCRR = `${tOCR.slice(0,element)} ${tOCR.slice(element,tOCR.length)}`;
-          
-      //     // tOCR.splice(element,0,' '); 
-      //   }
-      // }
-
+      }    
+      //need to get working
       tOCR[0] = tOCR[0].toUpperCase();
-      //tOCR = tOCR.in;
+      
 
       `${data[property]}` === ''  ? console.log('Nope'): `${property}` === 'projectName'  ? null : tOC +=`- \[${tOCR}\](#${tOCR.toLowerCase().replace(' ','-')})\n`;
       
@@ -990,33 +983,43 @@ function renderTableOfContents(data){
 
 }
 
+function renderCredits(credits){
+  if (credits === '') {
+    return '';
+  }
+  let returnStr = '';
+  const listOfCredits = credits.split(';');
+  if (listOfCredits.length > 1 && listOfCredits[0] != ',') {
+    for (let j = 0; j < listOfCredits.length -1; j++) {
+      const element = listOfCredits[j].split(',');
+      returnStr += `[${element[0]}](${element[1]})  `
+    }
+    return returnStr;
+  } else{
+    return '';
+  }
+
+}
+function renderUserInfo(info){
+  const splitInfo = info.split(' ');
+  return `[${splitInfo[0]}](https://github.com/${splitInfo[0]})  \n${splitInfo[1]}`;
+}
 // TODO: Create a function to generate markdown for README
 function generateMarkdown(data) {
 
-
-  // stringToReturn += `# ${data.projectName}\n\n`;
-  // stringToReturn += `## Description\n\n${data.description}\n\n`;
-  //table of contents
-  // stringToReturn += `## User Story\n\n${data.userStory}\n\n`;
-  // stringToReturn += `## Acceptance Criteria\n\n${data.acceptanceCriteria}\n\n`
-  //Installation
-  //Usage
-  //Contributing
-  //Tests
   return `
   # ${data.projectName}\n\n
   ## Description\n\n${data.description}\n\n
-  ## Table of Contents\n\n${renderTableOfContents(data)}\n\n
-  ## User Story\n\n${data.userStory}\n\n
+  ## Table of Contents\n\n${renderTableOfContents(data)}\n\n## User Story\n\n${data.userStory}\n\n
   ## Acceptance Criteria\n\n${data.acceptanceCriteria}\n\n
   ## Installation\n\n${data.installation}\n\n
   ## Usage\n\n${data.usage}\n\n
-  ## Credits\n\n${data.credits}\n\n
-
+  ## Credits\n\n${renderCredits(data.contributing)}\n\n
+  ## Tests\n\n${data.tests}\n\n  
+  ## Questions\n\n${renderUserInfo(data.questions)}\n\n
+  Best contact is by this Email, Thank you\n\n
+  ${renderLicenseSection(data.license)}\n\n
   `;
-
-
-
 
 }
 

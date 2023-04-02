@@ -3,9 +3,9 @@ const inquirer = require('inquirer');
 const fs = require('fs');
 //require the util
 const gMD = require('./utils/generateMarkdown.js');
-const { title } = require('process');
 
-const filename = process.argv[1].substring(0,process.argv[1].lastIndexOf("\\") + 1) + 'README.md';
+const filename = process.argv[1].substring(0,process.argv[1].lastIndexOf("\\") + 1) + 'generatedREADME.md';
+const logFilename = process.argv[1].substring(0,process.argv[1].lastIndexOf("\\") + 1) + 'logs.txt';
 
 const readMe = {
   projectName:'',
@@ -63,7 +63,6 @@ const questions = [
     pre: '',
   },
 ];
-
 const userStory = [
   {
     type: 'input',
@@ -90,7 +89,6 @@ const userStory = [
     end:'  ',
   },
 ];
-
 const acceptanceCriteria = [
   {
     type: 'input',
@@ -120,14 +118,14 @@ const acceptanceCriteria = [
     type: 'list',
     name: 'name',
     message: "Continue with another WHEN?",
-    choices: ['Yes','No'],
+    choices: ['No','Yes'],
     title: "continueWhen",
   },
   {
     type: 'list',
     name: 'name',
     message: "Continue with another GIVEN? ",
-    choices: ['Yes','No'],
+    choices: ['No','Yes'],
     title: "continueGiven",
   },
 
@@ -145,14 +143,16 @@ const usageInformation = [
   {
     type: 'input',
     message: 'Provide instructions and examples for use. Include screenshots as needed.',
-    name: 'name',      
+    name: 'name', 
+    title:'usage'     
   },
 ];
 const contributionGuidelines = [
   {
     type:'input',
-    message:'Enter descrtion',
+    message:'Enter description',
     name: 'name',
+    prefix: `Enter info for contributer links, description first then link\n`,
     title:'contributingDesc'
   },
   {
@@ -165,7 +165,7 @@ const contributionGuidelines = [
     type: 'list',
     name: 'name',
     message: "Continue with another Contributer?",
-    choices: ['Yes','No'],
+    choices: ["No","Yes"],
     title: "continueContr",
   },
 ];
@@ -181,17 +181,35 @@ const license = [
   {
     type: 'list',
     message: 'What license will this project be covered by?',
-    name: 'license',
+    name: 'name',
     choices: ['GNU GPLv3', 'Apache License 2.0', 'MIT License'],
+    title:'license'
+  },
+];
+const userInfo = [
+  {
+    type:'input',
+    message:'Enter GitHub username:',
+    name: 'name',
+    title:'questions'
+  },
+  {
+    type:'input',
+    message:'Enter email to be reached at:',
+    name: 'name',
+    title:'questions'
   },
 ];
 
-const qArray = [questions,descriptionQuestions,userStory,acceptanceCriteria,installationInstructions,usageInformation,contributionGuidelines,testInstructions];
+const qArray = [questions,descriptionQuestions,userStory,acceptanceCriteria,installationInstructions,usageInformation,contributionGuidelines,testInstructions,license,userInfo];
 
 const writeToFile = () => { 
 
-  //make data pretty with makePretty - return string  
-  let testing = gMD.generateMarkdown(readMe);
+  fs.appendFile(logFilename,(JSON.stringify(readMe)+'\n'),null,(err)=>{
+    err ? console.log(err) : () => {
+      console.log('Success!');      
+    }
+  })
   fs.writeFile(filename, gMD.generateMarkdown(readMe),null, (err) =>
     err ? console.log(err) : () => {
       console.log('Success!');      
@@ -199,25 +217,6 @@ const writeToFile = () => {
   );
 
 }   
-//makePretty moving to generateMarkdown.js
-// const makePretty = (data) =>{
-
-//   let stringToReturn = '';
-
-//   stringToReturn += `# ${data.projectName}\n\n`;
-//   stringToReturn += `## Description\n\n${data.description}\n\n`;
-//   //table of contents
-//   stringToReturn += `## User Story\n\n${data.userStory}\n\n`;
-//   stringToReturn += `## Acceptance Criteria\n\n${data.acceptanceCriteria}\n\n`
-//   //Installation
-//   //Usage
-//   //Contributing
-//   //Tests
-
-    
-//   return stringToReturn;
-// }
-
 // TODO: Create a function to initialize app
 const init = {
 
@@ -261,9 +260,24 @@ const init = {
               readMe.contributing += `${data.name},`
               break;
             case 'contributingSrc':
-              readMe.contributing += `${data.name};  \n`
+              readMe.contributing += `${data.name};`
               break;
-              
+            case 'questions':
+              readMe.questions +=`${data.name} `
+              break;
+            case 'license':
+              readMe.license +=`${data.name}`
+              break;
+            case 'installation':
+              readMe.installation +=`${data.name}`
+              break;
+            case 'usage':
+              readMe.usage += `${data.name}`;
+              break;
+            case 'tests':
+              readMe.tests += `${data.name}`;
+              break;
+
             default:
 
               break;
@@ -282,7 +296,3 @@ const init = {
 // Function call to initialize app
 init.callQuestions().then(writeToFile);
 
-module.exports = {
-  license,
-  inquirer
-}
